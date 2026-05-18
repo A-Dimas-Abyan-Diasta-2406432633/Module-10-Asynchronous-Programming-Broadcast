@@ -71,12 +71,26 @@ fn main() {
     let (executor, spawner) = new_executor_and_spawner();
 
     spawner.spawn(async {
-        println!("Dimas Komputer: howdy!");
+        println!("Task A: mulai");
         TimerFuture::new(Duration::new(2, 0)).await;
-        println!("Dimas Komputer: done!");
+        println!("Task A: selesai");
     });
-    println!("Dimas Komputer: task sudah di-spawn, executor belum jalan.");
 
-    drop(spawner);
+    spawner.spawn(async {
+        println!("Task B: mulai");
+        TimerFuture::new(Duration::new(1, 0)).await;
+        println!("Task B: selesai");
+    });
+
+    println!("Dimas Komputer: dua task sudah di-spawn, executor belum jalan.");
+
+    let keep_spawner = std::env::args().any(|arg| arg == "--no-drop");
+    if keep_spawner {
+        println!("Mode no-drop aktif: spawner tidak di-drop, executor akan terus menunggu task baru.");
+    } else {
+        println!("Mode normal: spawner di-drop, executor akan berhenti setelah queue kosong.");
+        drop(spawner);
+    }
+
     executor.run();
 }

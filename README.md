@@ -45,3 +45,22 @@ Jadi urutan output jadi seperti ini:
 
 Screenshot hasil run saya taruh di folder `images/`:
 - `images/experiment-1-2-run.png`
+
+### 1.3 Multiple Spawn and removing drop
+
+Pada bagian ini saya ubah `main` jadi:
+- spawn 2 task (`Task A` dan `Task B`)
+- bisa dijalankan 2 mode:
+  - mode normal: `drop(spawner)` dipanggil
+  - mode no-drop: `spawner` tidak di-drop (`--no-drop`)
+
+Tujuannya untuk lihat efek:
+- **spawner**: pengirim task baru ke executor.
+- **executor**: loop yang poll task dari queue.
+- **drop(spawner)**: menutup channel pengirim, jadi saat queue kosong `executor.run()` bisa selesai.
+
+Kalau mode no-drop, program tidak exit walau task selesai, karena receiver masih menunggu kemungkinan task baru dari `spawner`.
+
+Screenshot hasil run ada di:
+- `images/experiment-1-3-normal.png`
+- `images/experiment-1-3-no-drop.png`
