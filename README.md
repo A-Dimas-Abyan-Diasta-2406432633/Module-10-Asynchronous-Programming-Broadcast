@@ -216,4 +216,42 @@ Screenshot 3.2:
 - `images/experiment-3-2-be-creative.png`
 ![Experiment 3.2 Be Creative](images/experiment-3-2-be-creative.png)
 
+### Bonus: Rust Websocket server for YewChat
+
+Saya membuat server websocket Rust baru di Tutorial 2 yang kompatibel dengan format JSON dari YewChat:
+- `tutorial-2-broadcast-chat/chat-async/src/bin/server_yewchat.rs`
+
+Server ini menangani alur yang sama seperti server JS:
+- `register`: simpan nickname user lalu broadcast daftar user.
+- `message`: broadcast message dengan format:
+  - `messageType: "message"`
+  - `data: "{\"from\":\"...\",\"message\":\"...\",\"time\":...}"` (serialized JSON string)
+- `users`: broadcast daftar user online di `dataArray`.
+
+Kenapa perubahan ini berhasil:
+- format JSON, nama field, dan nilai `messageType` dibuat sama dengan yang dipakai webclient Yew (`register`, `users`, `message`).
+- endpoint sama (`ws://127.0.0.1:8080`), jadi webclient Tutorial 3 bisa connect langsung ke server Rust ini.
+
+Cara run bonus:
+
+```bash
+cd tutorial-2-broadcast-chat/chat-async
+cargo run --bin server_yewchat
+```
+
+Lalu jalankan client web dari Tutorial 3 seperti biasa:
+
+```bash
+cd tutorial-3-webchat/SimpleWebsocketServer
+npm start
+
+cd tutorial-3-webchat/YewChat
+npm run start
+```
+
+Pendapat saya:
+- versi JS lebih cepat untuk setup awal dan prototyping.
+- versi Rust lebih enak untuk konsistensi type dan reliability jangka panjang.
+- untuk project ini, saya prefer versi Rust karena server Tutorial 2 dan ekosistem tugas jadi satu stack.
+
 </details>
