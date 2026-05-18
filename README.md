@@ -103,3 +103,22 @@ Saat client kirim teks:
 Screenshot untuk 2.1 disimpan di:
 - `images/experiment-2-1-three-clients.png`
 ![Experiment 2.1 Three Clients](images/experiment-2-1-three-clients.png)
+
+### 2.2 Modifying the websocket port
+
+Pada eksperimen ini saya ganti port websocket dari `2000` ke `8080`.
+
+File yang diubah:
+- `tutorial-2-broadcast-chat/chat-async/src/bin/server.rs`
+  - `TcpListener::bind("127.0.0.1:8080")`
+  - log jadi `listening on port 8080`
+- `tutorial-2-broadcast-chat/chat-async/src/bin/client.rs`
+  - URI koneksi jadi `ws://127.0.0.1:8080`
+
+Kenapa dua sisi harus diubah:
+- websocket itu koneksi client-server, jadi port harus sama di kedua sisi.
+- kalau hanya server atau hanya client yang diubah, koneksi gagal.
+
+Protokol yang dipakai tetap sama:
+- masih `ws://` (WebSocket tanpa TLS).
+- letak definisi protokol ada di URI client: `ws://127.0.0.1:8080`.
