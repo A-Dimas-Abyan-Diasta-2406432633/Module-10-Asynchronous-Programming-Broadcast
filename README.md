@@ -150,3 +150,43 @@ Alasan ubah di server:
 
 Screenshot hasil perubahan:
 - `images/experiment-2-3-ip-port.png`
+![Experiment 2.3 IP Port](images/experiment-2-3-ip-port.png)
+
+## Tutorial 3: WebChat using Yew
+
+Referensi:
+- https://blog.devgenius.io/lets-build-a-websockets-project-with-rust-and-yew-0-19-60720367399f
+- https://github.com/jtordgeman/YewChat
+- https://github.com/jtordgeman/SimpleWebsocketServer
+
+### 3.1 Original code
+
+Saya clone dua project ke folder:
+- `tutorial-3-webchat/YewChat`
+- `tutorial-3-webchat/SimpleWebsocketServer`
+
+Untuk kompatibilitas dengan toolchain Rust dan wasm sekarang, saya update lock dependency frontend/build tool supaya project tetap bisa dibuild.
+
+Cara run server websocket:
+
+```bash
+cd tutorial-3-webchat/SimpleWebsocketServer
+npm install
+npm start
+```
+
+Cara run webclient Yew:
+
+```bash
+cd tutorial-3-webchat/YewChat
+npm install
+npm run start
+```
+
+Catatan:
+- websocket client Yew terhubung ke `ws://127.0.0.1:8080`
+- server `SimpleWebsocketServer` default listen di port `8080`
+
+Screenshot 3.1:
+- `images/experiment-3-1-original-code.png`
+![Experiment 3.1 Original Code](images/experiment-3-1-original-code.png)
