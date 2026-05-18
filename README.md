@@ -122,3 +122,31 @@ Kenapa dua sisi harus diubah:
 Protokol yang dipakai tetap sama:
 - masih `ws://` (WebSocket tanpa TLS).
 - letak definisi protokol ada di URI client: `ws://127.0.0.1:8080`.
+
+### 2.3 Small changes, add IP and Port
+
+Perubahan kecil yang saya lakukan:
+- format message broadcast di server sekarang ditambah info pengirim (`IP:Port`).
+
+Lokasi perubahan:
+- `tutorial-2-broadcast-chat/chat-async/src/bin/server.rs`
+
+Sebelum:
+
+```rust
+bcast_tx.send(text.into())?;
+```
+
+Sesudah:
+
+```rust
+let tagged = format!("[{}] {}", addr, text);
+bcast_tx.send(tagged)?;
+```
+
+Alasan ubah di server:
+- server yang tahu alamat socket pengirim (`SocketAddr`),
+- jadi paling tepat kalau tagging identitas pengirim dilakukan di server sebelum dibroadcast.
+
+Screenshot hasil perubahan:
+- `images/experiment-2-3-ip-port.png`

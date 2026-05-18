@@ -21,12 +21,13 @@ async fn handle_connection(
         tokio::select! {
             incoming = ws_stream.next() => {
                 match incoming {
-                    Some(Ok(msg)) => {
-                        if let Some(text) = msg.as_text() {
-                            println!("From client {addr:?} {text:?}");
-                            bcast_tx.send(text.into())?;
+                        Some(Ok(msg)) => {
+                            if let Some(text) = msg.as_text() {
+                                println!("From client {addr:?} {text:?}");
+                                let tagged = format!("[{}] {}", addr, text);
+                                bcast_tx.send(tagged)?;
+                            }
                         }
-                    }
                     Some(Err(err)) => return Err(err.into()),
                     None => return Ok(()),
                 }
