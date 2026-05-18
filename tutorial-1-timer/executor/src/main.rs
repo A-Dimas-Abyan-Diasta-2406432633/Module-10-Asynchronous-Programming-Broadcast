@@ -75,6 +75,7 @@ fn main() {
         TimerFuture::new(Duration::new(2, 0)).await;
         println!("Dimas Komputer: done!");
     });
+    println!("Dimas Komputer: task sudah di-spawn, executor belum jalan.");
 
     drop(spawner);
     executor.run();
