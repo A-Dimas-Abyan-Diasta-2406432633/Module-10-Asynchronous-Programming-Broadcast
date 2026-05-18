@@ -1,6 +1,7 @@
 # Module 10 - Asynchronous Programming
 
-## Tutorial 1: Timer
+<details>
+<summary><strong>Tutorial 1: Timer</strong></summary>
 
 ### 1.1 Initial Code
 
@@ -68,7 +69,10 @@ Screenshot hasil run ada di:
 ![Experiment 1.3 Normal](images/experiment-1-3-normal.png)
 ![Experiment 1.3 No Drop](images/experiment-1-3-no-drop.png)
 
-## Tutorial 2: Broadcast Chat
+</details>
+
+<details>
+<summary><strong>Tutorial 2: Broadcast Chat</strong></summary>
 
 Referensi:
 - https://google.github.io/comprehensive-rust/concurrency/async-exercises/chat-app.html
@@ -152,7 +156,10 @@ Screenshot hasil perubahan:
 - `images/experiment-2-3-ip-port.png`
 ![Experiment 2.3 IP Port](images/experiment-2-3-ip-port.png)
 
-## Tutorial 3: WebChat using Yew
+</details>
+
+<details>
+<summary><strong>Tutorial 3: WebChat using Yew</strong></summary>
 
 Referensi:
 - https://blog.devgenius.io/lets-build-a-websockets-project-with-rust-and-yew-0-19-60720367399f
@@ -190,3 +197,23 @@ Catatan:
 Screenshot 3.1:
 - `images/experiment-3-1-original-code.png`
 ![Experiment 3.1 Original Code](images/experiment-3-1-original-code.png)
+
+### 3.2 Be Creative!
+
+Perubahan kreativitas yang saya buat fokus di webclient (`YewChat`):
+- ganti tampilan login jadi card modern dengan gradient background.
+- redesign halaman chat jadi layout lebih editorial:
+  - sidebar user dengan status ringkas,
+  - header chat dengan info user login,
+  - bubble message beda warna untuk pesan sendiri dan pesan user lain.
+- fallback avatar aman kalau data user belum sinkron (tidak panic).
+
+File yang diubah:
+- `tutorial-3-webchat/YewChat/src/components/login.rs`
+- `tutorial-3-webchat/YewChat/src/components/chat.rs`
+
+Screenshot 3.2:
+- `images/experiment-3-2-be-creative.png`
+![Experiment 3.2 Be Creative](images/experiment-3-2-be-creative.png)
+
+</details>

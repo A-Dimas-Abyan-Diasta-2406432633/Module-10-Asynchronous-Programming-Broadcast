@@ -45,6 +45,7 @@ pub struct Chat {
     _producer: Box<dyn Bridge<EventBus>>,
     wss: WebsocketService,
     messages: Vec<MessageData>,
+    current_user: String,
 }
 impl Component for Chat {
     type Message = Msg;
@@ -78,6 +79,7 @@ impl Component for Chat {
             chat_input: NodeRef::default(),
             wss,
             _producer: EventBus::bridge(ctx.link().callback(Msg::HandleMsg)),
+            current_user: username,
         }
     }
 
@@ -139,22 +141,27 @@ impl Component for Chat {
         let submit = ctx.link().callback(|_| Msg::SubmitMessage);
 
         html! {
-            <div class="flex w-screen">
-                <div class="flex-none w-56 h-screen bg-gray-100">
-                    <div class="text-xl p-3">{"Users"}</div>
+            <div class="flex w-screen h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-emerald-900">
+                <div class="flex-none w-72 h-screen bg-slate-950/85 text-white border-r border-cyan-500/30">
+                    <div class="px-4 py-5 border-b border-cyan-400/20">
+                        <div class="text-lg font-bold">{"Online Users"}</div>
+                        <div class="text-xs text-cyan-200">
+                            {format!("{} user aktif", self.users.len())}
+                        </div>
+                    </div>
                     {
                         self.users.clone().iter().map(|u| {
                             html!{
-                                <div class="flex m-3 bg-white rounded-lg p-2">
+                                <div class="flex m-3 bg-slate-800/80 rounded-xl p-2 border border-slate-700">
                                     <div>
                                         <img class="w-12 h-12 rounded-full" src={u.avatar.clone()} alt="avatar"/>
                                     </div>
                                     <div class="flex-grow p-3">
-                                        <div class="flex text-xs justify-between">
+                                        <div class="flex text-sm font-semibold justify-between">
                                             <div>{u.name.clone()}</div>
                                         </div>
-                                        <div class="text-xs text-gray-400">
-                                            {"Hi there!"}
+                                        <div class="text-xs text-cyan-200">
+                                            {"Ready to chat"}
                                         </div>
                                     </div>
                                 </div>
@@ -162,36 +169,70 @@ impl Component for Chat {
                         }).collect::<Html>()
                     }
                 </div>
-                <div class="grow h-screen flex flex-col">
-                    <div class="w-full h-14 border-b-2 border-gray-300"><div class="text-xl p-3">{"💬 Chat!"}</div></div>
-                    <div class="w-full grow overflow-auto border-b-2 border-gray-300">
+                <div class="grow h-screen flex flex-col bg-white/95">
+                    <div class="w-full h-16 border-b border-slate-200 px-6 flex items-center justify-between">
+                        <div>
+                            <div class="text-xl font-bold text-slate-800">{"Rust Yew Lounge"}</div>
+                            <div class="text-xs text-slate-500">{format!("Login sebagai {}", self.current_user)}</div>
+                        </div>
+                        <div class="text-xs px-3 py-1 rounded-full bg-cyan-100 text-cyan-700 border border-cyan-200">
+                            {"Realtime WebSocket"}
+                        </div>
+                    </div>
+                    <div class="w-full grow overflow-auto border-b border-slate-200 py-4">
                         {
                             self.messages.iter().map(|m| {
-                                let user = self.users.iter().find(|u| u.name == m.from).unwrap();
+                                let user = self.users.iter().find(|u| u.name == m.from);
+                                let avatar = user
+                                    .map(|u| u.avatar.clone())
+                                    .unwrap_or_else(|| format!("https://avatars.dicebear.com/api/adventurer-neutral/{}.svg", m.from));
+                                let is_me = m.from == self.current_user;
+                                let row_class = if is_me {
+                                    "flex justify-end w-full px-6 my-3"
+                                } else {
+                                    "flex justify-start w-full px-6 my-3"
+                                };
+                                let bubble_class = if is_me {
+                                    "max-w-xl p-4 rounded-2xl rounded-br-md bg-cyan-600 text-white shadow-md"
+                                } else {
+                                    "max-w-xl p-4 rounded-2xl rounded-bl-md bg-slate-100 text-slate-800 shadow-sm border border-slate-200"
+                                };
                                 html!{
-                                    <div class="flex items-end w-3/6 bg-gray-100 m-8 rounded-tl-lg rounded-tr-lg rounded-br-lg ">
-                                        <img class="w-8 h-8 rounded-full m-3" src={user.avatar.clone()} alt="avatar"/>
-                                        <div class="p-3">
-                                            <div class="text-sm">
+                                    <div class={row_class}>
+                                        if !is_me {
+                                            <img class="w-9 h-9 rounded-full mr-3 self-end" src={avatar.clone()} alt="avatar"/>
+                                        }
+                                        <div class={bubble_class}>
+                                            <div class="text-xs font-semibold mb-1 opacity-90">
                                                 {m.from.clone()}
                                             </div>
-                                            <div class="text-xs text-gray-500">
+                                            <div class="text-sm leading-relaxed">
                                                 if m.message.ends_with(".gif") {
-                                                    <img class="mt-3" src={m.message.clone()}/>
+                                                    <img class="mt-2 rounded-lg" src={m.message.clone()}/>
                                                 } else {
                                                     {m.message.clone()}
                                                 }
                                             </div>
                                         </div>
+                                        if is_me {
+                                            <img class="w-9 h-9 rounded-full ml-3 self-end" src={avatar.clone()} alt="avatar"/>
+                                        }
                                     </div>
                                 }
                             }).collect::<Html>()
                         }
 
                     </div>
-                    <div class="w-full h-14 flex px-3 items-center">
-                        <input ref={self.chat_input.clone()} type="text" placeholder="Message" class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" name="message" required=true />
-                        <button onclick={submit} class="p-3 shadow-sm bg-blue-600 w-10 h-10 rounded-full flex justify-center items-center color-white">
+                    <div class="w-full h-16 flex px-4 items-center bg-white">
+                        <input
+                            ref={self.chat_input.clone()}
+                            type="text"
+                            placeholder="Ketik pesan..."
+                            class="block w-full py-2 pl-4 mx-2 bg-slate-100 rounded-full outline-none focus:ring-2 focus:ring-cyan-500"
+                            name="message"
+                            required=true
+                        />
+                        <button onclick={submit} class="p-3 shadow-sm bg-cyan-600 w-11 h-11 rounded-full flex justify-center items-center color-white">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="fill-white">
                                 <path d="M0 0h24v24H0z" fill="none"></path><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                             </svg>

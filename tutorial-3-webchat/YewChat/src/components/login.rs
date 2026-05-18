@@ -27,12 +27,28 @@ pub fn login() -> Html {
     };
 
     html! {
-       <div class="bg-gray-800 flex w-screen">
-            <div class="container mx-auto flex flex-col justify-center items-center">
-                <form class="m-4 flex">
-                    <input {oninput} class="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Username" />
-                    <Link<Route> to={Route::Chat}> <button {onclick} disabled={username.len()<1} class="px-8 rounded-r-lg bg-violet-600	  text-white font-bold p-4 uppercase border-violet-600 border-t border-b border-r" >{"Go Chatting!"}</button></Link<Route>>
-                </form>
+       <div class="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-cyan-900 to-emerald-800">
+            <div class="w-full max-w-xl mx-4 bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-white/40">
+                <div class="p-8">
+                    <div class="text-3xl font-extrabold text-slate-800">{"Rust Yew Lounge"}</div>
+                    <div class="mt-2 text-sm text-slate-600">{"Masuk dulu, lalu ngobrol realtime dengan websocket."}</div>
+                    <form class="mt-6 flex gap-2">
+                        <input
+                            {oninput}
+                            class="flex-1 rounded-xl p-3 border border-slate-300 text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            placeholder="Masukkan username"
+                        />
+                        <Link<Route> to={Route::Chat}>
+                            <button
+                                {onclick}
+                                disabled={username.len() < 1}
+                                class="px-6 rounded-xl bg-cyan-600 text-white font-bold border border-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                {"Masuk Chat"}
+                            </button>
+                        </Link<Route>>
+                    </form>
+                </div>
             </div>
         </div>
     }
